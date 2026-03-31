@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Air Monitor Pro — Real-time air quality monitoring, AQI analytics, and health alerts dashboard.">
+  <title>Air Monitor Pro — Real-Time Air Quality Dashboard</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/charts.css">
+
+  <!-- Chart.js v4 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+  <!-- Favicon (inline SVG) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌬️</text></svg>">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ============ HEADER ============ -->
+    <header class="header" id="main-header">
+      <div class="header__left">
+        <div class="header__logo">
+          <div class="header__logo-icon">🌬️</div>
+          <h1 class="header__title gradient-text">Air Monitor Pro</h1>
+        </div>
+        <span class="header__badge" id="data-source-badge">
+          <span class="live-dot"></span>
+          LIVE
+        </span>
+      </div>
+      <div class="header__right">
+        <div class="header__clock">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+          </svg>
+          <span id="header-clock">--:--:--</span>
+        </div>
+        <div class="header__geo" id="header-geo">
+          <span class="header__geo-label" id="geo-status">Detecting location...</span>
+        </div>
+        <select class="location-select" id="location-select" aria-label="Select monitoring city">
+        </select>
+        <button class="btn-icon" id="btn-detect-location" aria-label="Detect my location" title="Auto-detect GPS location">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/><circle cx="12" cy="12" r="8"/>
+          </svg>
+        </button>
+        <button class="btn-icon" id="btn-settings" aria-label="Settings" title="Alert Thresholds">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ DASHBOARD ============ -->
+    <main class="dashboard">
+
+      <!-- ---- AQI HERO SECTION ---- -->
+      <section class="aqi-hero" id="aqi-hero">
+
+        <!-- Left metrics (PM2.5, PM10, CO2) -->
+        <div class="metrics-grid stagger-children" id="metrics-left">
+          <div class="metric-card" id="metric-pm25" style="--metric-accent: #22d3ee;">
+            <div class="metric-card__header">
+              <span class="metric-card__label">PM2.5</span>
+              <span class="metric-card__icon">🌫️</span>
+            </div>
+            <div class="metric-card__value-row">
+              <span class="metric-card__value">--</span>
+              <span class="metric-card__unit">μg/m³</span>
+            </div>
+            <div class="metric-card__footer">
+              <span class="metric-card__trend stable">→ Stable</span>
+            </div>
+          </div>
+
+          <div class="metric-card" id="metric-pm10" style="--metric-accent: #3b82f6;">
+            <div class="metric-card__header">
+              <span class="metric-card__label">PM10</span>
+              <span class="metric-card__icon">💨</span>
+            </div>
+            <div class="metric-card__value-row">
+              <span class="metric-card__value">--</span>
+              <span class="metric-card__unit">μg/m³</span>
+            </div>
+            <div class="metric-card__footer">
+              <span class="metric-card__trend stable">→ Stable</span>
+            </div>
+          </div>
+
+          <div class="metric-card" id="metric-co2" style="--metric-accent: #8b5cf6;">
+            <div class="metric-card__header">
+              <span class="metric-card__label">CO₂</span>
+              <span class="metric-card__icon">🫧</span>
+            </div>
+            <div class="metric-card__value-row">
+              <span class="metric-card__value">--</span>
+              <span class="metric-card__unit">ppm</span>
+            </div>
+            <div class="metric-card__footer">
+              <span class="metric-card__trend stable">→ Stable</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center AQI Gauge -->
+        <div class="aqi-gauge-container" id="aqi-gauge-section">
+          <div class="aqi-gauge animate-breathe">
+            <svg viewBox="0 0 200 200">
+              <circle class="aqi-gauge__bg" cx="100" cy="100" r="90"/>
+              <circle class="aqi-gauge__progress" id="aqi-gauge-progress" cx="100" cy="100" r="90"
+                stroke-dasharray="565.48"
+                stroke-dashoffset="565.48"/>
+            </svg>
+            <div class="aqi-gauge__center">
+              <span class="aqi-gauge__label">AQI</span>
+              <span class="aqi-gauge__value" id="aqi-value">--</span>
+              <span class="aqi-gauge__category" id="aqi-category">Loading...</span>
+            </div>
+          </div>
+          <div class="aqi-gauge__details">
+            <div class="aqi-gauge__detail">
+              <span class="aqi-gauge__detail-label">Dominant</span>
+              <span class="aqi-gauge__detail-value" id="aqi-dominant">--</span>
+            </div>
+            <div class="aqi-gauge__detail">
+              <span class="aqi-gauge__detail-label">Sub-Index</span>
+              <span class="aqi-gauge__detail-value" id="aqi-subindex">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right metrics (VOC, Temp, Humidity) -->
+        <div class="metrics-grid stagger-children" id="metrics-right">
+          <div class="metric-card" id="metric-voc" style="--metric-accent: #ec4899;">
+            <div class="metric-card__header">
+              <span class="metric-card__label">VOC</span>
+              <span class="metric-card__icon">🧪</span>
+            </div>
+            <div class="metric-card__value-row">
+              <span class="metric-card__value">--</span>
+              <span class="metric-card__unit">ppb</span>
+            </div>
+            <div class="metric-card__footer">
+              <span class="metric-card__trend stable">→ Stable</span>
+            </div>
+          </div>
+
+          <div class="metric-card" id="metric-temperature" style="--metric-accent: #f97316;">
+            <div class="metric-card__header">
+              <span class="metric-card__label">Temperature</span>
+              <span class="metric-card__icon">🌡️</span>
+            </div>
+            <div class="metric-card__value-row">
+              <span class="metric-card__value">--</span>
+              <span class="metric-card__unit">°C</span>
+            </div>
+            <div class="metric-card__footer">
+              <span class="metric-card__trend stable">→ Stable</span>
+            </div>
+          </div>
+
+          <div class="metric-card" id="metric-humidity" style="--metric-accent: #14b8a6;">
+            <div class="metric-card__header">
+              <span class="metric-card__label">Humidity</span>
+              <span class="metric-card__icon">💧</span>
+            </div>
+            <div class="metric-card__value-row">
+              <span class="metric-card__value">--</span>
+              <span class="metric-card__unit">%</span>
+            </div>
+            <div class="metric-card__footer">
+              <span class="metric-card__trend stable">→ Stable</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ---- MAIN CONTENT: CHARTS + SIDEBAR ---- -->
+      <section class="main-content" id="main-content">
+
+        <!-- Charts Panel -->
+        <div class="chart-panel animate-fade-in-up" id="chart-panel">
+          <div class="chart-panel__header">
+            <h2 class="chart-panel__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+              </svg>
+              Air Quality Analytics
+            </h2>
+
+            <div class="chart-tabs" id="chart-tabs">
+              <button class="chart-tab active" data-tab="realtime">Real-Time</button>
+              <button class="chart-tab" data-tab="trends">24h Trends</button>
+              <button class="chart-tab" data-tab="weekly">Weekly</button>
+              <button class="chart-tab" data-tab="correlation">Correlation</button>
+            </div>
+          </div>
+
+          <!-- Pollutant Toggles (for real-time view) -->
+          <div class="pollutant-toggles" id="pollutant-toggles">
+            <button class="pollutant-toggle active" data-pollutant="pm25">
+              <span class="dot" style="background: #22d3ee;"></span> PM2.5
+            </button>
+            <button class="pollutant-toggle active" data-pollutant="pm10">
+              <span class="dot" style="background: #3b82f6;"></span> PM10
+            </button>
+            <button class="pollutant-toggle active" data-pollutant="co2">
+              <span class="dot" style="background: #8b5cf6;"></span> CO₂
+            </button>
+            <button class="pollutant-toggle active" data-pollutant="voc">
+              <span class="dot" style="background: #ec4899;"></span> VOC
+            </button>
+          </div>
+
+          <!-- Chart Containers -->
+          <div class="chart-container" id="chart-realtime">
+            <canvas id="realtimeChart"></canvas>
+          </div>
+          <div class="chart-container chart-container--hidden" id="chart-trends">
+            <canvas id="trendChart"></canvas>
+          </div>
+          <div class="chart-container chart-container--hidden" id="chart-weekly">
+            <canvas id="weeklyChart"></canvas>
+          </div>
+          <div class="chart-container chart-container--hidden" id="chart-correlation">
+            <canvas id="correlationChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Sidebar: Alerts + Stats + Health -->
+        <aside class="sidebar" id="sidebar">
+
+          <!-- Alert Panel -->
+          <div class="alert-panel" id="alert-panel">
+            <div class="alert-panel__header">
+              <h3 class="alert-panel__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                Alerts
+              </h3>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <span class="alert-panel__count" id="alert-count" style="display:none;">0</span>
+                <button class="btn-icon" id="btn-clear-alerts" title="Clear all alerts" style="width:28px;height:28px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;">
+                    <path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="alert-list" id="alert-list">
+              <div class="alert-empty">
+                <span>✅</span>
+                <span>No alerts — all values within safe ranges</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistics Panel -->
+          <div class="stats-panel" id="stats-panel">
+            <h3 class="stats-panel__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"/>
+              </svg>
+              PM2.5 Statistics (24h)
+            </h3>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-item__label">Mean</div>
+                <div class="stat-item__value" id="stat-mean">--</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-item__label">Maximum</div>
+                <div class="stat-item__value" id="stat-max">--</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-item__label">Minimum</div>
+                <div class="stat-item__value" id="stat-min">--</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-item__label">95th %ile</div>
+                <div class="stat-item__value" id="stat-p95">--</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-item__label">PM-Humidity Corr</div>
+                <div class="stat-item__value" id="stat-corr">--</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-item__label">Spike Events</div>
+                <div class="stat-item__value" id="stat-peaks">--</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Health Recommendations -->
+          <div class="health-card" id="health-card">
+            <h3 class="health-card__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              Health Recommendations
+            </h3>
+            <div class="health-card__recommendations" id="health-recommendations">
+              <div class="health-rec">
+                <span class="health-rec__icon">⏳</span>
+                <span>Analyzing air quality data...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Export Button -->
+          <button class="btn-export" id="btn-export">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Export Data (CSV)
+          </button>
+
+        </aside>
+      </section>
+
+    </main>
+
+    <!-- ============ TOAST CONTAINER ============ -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- ============ SETTINGS MODAL ============ -->
+    <div class="modal-overlay" id="settings-modal">
+      <div class="modal">
+        <div class="modal__header">
+          <h2 class="modal__title">⚙️ Alert Thresholds</h2>
+          <button class="modal__close" id="close-modal">✕</button>
+        </div>
+
+        <div class="modal__section">
+          <h3 class="modal__section-title">Configure Warning & Danger Levels</h3>
+
+          <div class="threshold-row" style="margin-bottom:12px;">
+            <span class="threshold-row__label" style="font-size:0.7rem;color:var(--text-tertiary);">Pollutant</span>
+            <span style="font-size:0.7rem;color:var(--aqi-moderate);text-align:center;">⚠️ Warning</span>
+            <span style="font-size:0.7rem;color:var(--aqi-unhealthy);text-align:center;">🔴 Danger</span>
+          </div>
+
+          <div class="threshold-row">
+            <span class="threshold-row__label">PM2.5 (μg/m³)</span>
+            <input type="number" class="threshold-input warning-input" id="threshold-pm25-warning" value="35">
+            <input type="number" class="threshold-input danger-input" id="threshold-pm25-danger" value="55">
+          </div>
+
+          <div class="threshold-row">
+            <span class="threshold-row__label">PM10 (μg/m³)</span>
+            <input type="number" class="threshold-input warning-input" id="threshold-pm10-warning" value="100">
+            <input type="number" class="threshold-input danger-input" id="threshold-pm10-danger" value="155">
+          </div>
+
+          <div class="threshold-row">
+            <span class="threshold-row__label">CO₂ (ppm)</span>
+            <input type="number" class="threshold-input warning-input" id="threshold-co2-warning" value="1000">
+            <input type="number" class="threshold-input danger-input" id="threshold-co2-danger" value="2000">
+          </div>
+
+          <div class="threshold-row">
+            <span class="threshold-row__label">VOC (ppb)</span>
+            <input type="number" class="threshold-input warning-input" id="threshold-voc-warning" value="250">
+            <input type="number" class="threshold-input danger-input" id="threshold-voc-danger" value="400">
+          </div>
+
+          <div class="threshold-row">
+            <span class="threshold-row__label">Temperature (°C)</span>
+            <input type="number" class="threshold-input warning-input" id="threshold-temperature-warning" value="32">
+            <input type="number" class="threshold-input danger-input" id="threshold-temperature-danger" value="38">
+          </div>
+
+          <div class="threshold-row">
+            <span class="threshold-row__label">Humidity (%)</span>
+            <input type="number" class="threshold-input warning-input" id="threshold-humidity-warning" value="70">
+            <input type="number" class="threshold-input danger-input" id="threshold-humidity-danger" value="85">
+          </div>
+        </div>
+
+        <button class="btn-save" id="btn-save-thresholds">Save Thresholds</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script src="js/utils.js"></script>
+  <script src="js/sensorSimulator.js"></script>
+  <script src="js/aqiEngine.js"></script>
+  <script src="js/alertManager.js"></script>
+  <script src="js/chartManager.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

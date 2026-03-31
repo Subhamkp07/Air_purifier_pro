@@ -1,0 +1,192 @@
+/* ============================================
+   AIR MONITOR PRO — Chart Styles
+   ============================================ */
+
+/* ---------- Chart Panel ---------- */
+.chart-panel {
+  background: var(--gradient-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--bg-glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.chart-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.chart-panel__title {
+  font-family: var(--font-heading);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.chart-panel__title svg {
+  width: 20px;
+  height: 20px;
+  color: var(--accent-cyan);
+}
+
+/* ---------- Chart Tabs ---------- */
+.chart-tabs {
+  display: flex;
+  gap: var(--space-xs);
+  background: rgba(0,0,0,0.25);
+  padding: 3px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(100,140,255,0.05);
+}
+
+.chart-tab {
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text-tertiary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  white-space: nowrap;
+  font-family: var(--font-body);
+}
+
+.chart-tab:hover {
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.03);
+}
+
+.chart-tab.active {
+  color: var(--text-primary);
+  background: rgba(34,211,238,0.1);
+  box-shadow: 0 0 12px rgba(34,211,238,0.1);
+}
+
+/* ---------- Chart Container ---------- */
+.chart-container {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+  max-height: 380px;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chart-container--hidden {
+  display: none;
+}
+
+/* ---------- Pollutant Toggle Buttons ---------- */
+.pollutant-toggles {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.pollutant-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: var(--font-body);
+}
+
+.pollutant-toggle .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.pollutant-toggle.active {
+  color: var(--text-primary);
+  border-color: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ---------- Chart Legend Override ---------- */
+.chart-legend {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  padding-top: var(--space-sm);
+}
+
+.chart-legend__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.chart-legend__color {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* ---------- No Data State ---------- */
+.chart-no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+  color: var(--text-tertiary);
+  gap: var(--space-sm);
+}
+
+.chart-no-data svg {
+  width: 48px;
+  height: 48px;
+  opacity: 0.3;
+}
+
+.chart-no-data span {
+  font-size: var(--fs-sm);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .chart-panel {
+    padding: var(--space-md);
+  }
+
+  .chart-panel__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .chart-tabs {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chart-container {
+    min-height: 220px;
+    max-height: 280px;
+  }
+}
