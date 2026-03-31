@@ -1,9 +1,4 @@
-<p align="center">
-  <img src="https://img.shields.io/badge/Status-Live-10b981?style=for-the-badge&logo=statuspage&logoColor=white" alt="Status">
-  <img src="https://img.shields.io/badge/Version-1.0.0-3b82f6?style=for-the-badge" alt="Version">
-  <img src="https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge" alt="License">
-  <img src="https://img.shields.io/badge/PRs-Welcome-ec4899?style=for-the-badge" alt="PRs Welcome">
-</p>
+
 
 <h1 align="center">🌬️ Air Monitor Pro</h1>
 
