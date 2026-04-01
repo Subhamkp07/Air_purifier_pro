@@ -112,15 +112,7 @@ graph TD
  **Allow location access** when prompted for automatic city detection (optional).
 
 > [!TIP]
-> For the best experience, use a local development server to avoid CORS issues with geolocation:
-> ```bash
-> # Using Python
-> python -m http.server 8000
->
-> # Using Node.js
-> npx serve .
-> ```
-> Then navigate to `http://localhost:8000`
+
 
 ---
 
