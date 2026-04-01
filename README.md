@@ -106,27 +106,10 @@ graph TD
 - A modern web browser (Chrome, Firefox, Edge, Safari)
 - No build tools, package managers, or servers required
 
-### Quick Start
 
-1. **Clone or download** the repository:
-   ```bash
-   git clone https://github.com/your-username/air-monitor-pro.git
-   cd air-monitor-pro
-   ```
+   
 
-2. **Open** `index.html` directly in your browser:
-   ```bash
-   # On Windows
-   start index.html
-
-   # On macOS
-   open index.html
-
-   # On Linux
-   xdg-open index.html
-   ```
-
-3. **Allow location access** when prompted for automatic city detection (optional).
+ **Allow location access** when prompted for automatic city detection (optional).
 
 > [!TIP]
 > For the best experience, use a local development server to avoid CORS issues with geolocation:
